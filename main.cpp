@@ -13,8 +13,9 @@ int main()
     microseconds t1, t2;
     unsigned BASE = 128;
     unsigned MULTIPLE = 2;
-    unsigned TRIAL = 23; //25
+    unsigned TRIAL = 19; //25
 
+    /*
     printf("qbsort_m:\n");
     for (unsigned n = BASE, k = 1; k <= TRIAL; ++k)
     {
@@ -41,6 +42,7 @@ int main()
 
         n *= MULTIPLE;
     }
+    */
 
     printf("qbsort:\n");
     for (unsigned n = BASE, k = 1; k <= TRIAL; ++k)
