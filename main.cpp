@@ -11,9 +11,9 @@ using namespace std::chrono;
 int main()
 {
     microseconds t1, t2;
-    unsigned BASE = 128;
-    unsigned MULTIPLE = 2;
-    unsigned TRIAL = 19; //25
+    unsigned BASE = 2000000000;
+    unsigned STEP = 100000000;
+    unsigned TRIAL = 1; //25
 
     /*
     printf("qbsort_m:\n");
@@ -47,7 +47,7 @@ int main()
     printf("qbsort:\n");
     for (unsigned n = BASE, k = 1; k <= TRIAL; ++k)
     {
-        printf("Round %d: Sorting %d integers\n", k, n);
+        printf("Round %d: Sorting %u integers\n", k, n);
         unitype* nums = new unitype[n];
         srand(21);
         for (unsigned i = 0; i < n; ++i) nums[i] = rand() | rand() << 16 | rand() << 32 | rand() << 48;
@@ -60,7 +60,7 @@ int main()
 
         for (unsigned i = 1; i < n; ++i) if (nums[i - 1] > nums[i])
         {
-            printf("Wrong sort at %d\n", i);
+            printf("Wrong sort at %u\n", i);
             break;
         }
 
@@ -68,13 +68,13 @@ int main()
 
         delete[] nums;
 
-        n *= MULTIPLE;
+        n += STEP;
     }
 
     printf("std::sort:\n");
     for (unsigned n = BASE, k = 1; k <= TRIAL; ++k)
     {
-        printf("Round %d: Sorting %d integers\n", k, n);
+        printf("Round %d: Sorting %u integers\n", k, n);
         unitype* nums = new unitype[n];
         srand(21);
         for (unsigned i = 0; i < n; ++i) nums[i] = rand() | rand() << 16 | rand() << 32 | rand() << 48;
@@ -87,7 +87,7 @@ int main()
 
         for (unsigned i = 1; i < n; ++i) if (nums[i - 1] > nums[i])
         {
-            printf("Wrong sort at %d\n", i);
+            printf("Wrong sort at %u\n", i);
             break;
         }
 
@@ -95,13 +95,14 @@ int main()
 
         delete[] nums;
 
-        n *= MULTIPLE;
+        n += STEP;
     }
 
+    /*
     printf("std::stable_sort:\n");
     for (unsigned n = BASE, k = 1; k <= TRIAL; ++k)
     {
-        printf("Round %d: Sorting %d integers\n", k, n);
+        printf("Round %d: Sorting %u integers\n", k, n);
         unitype* nums = new unitype[n];
         srand(21);
         for (unsigned i = 0; i < n; ++i) nums[i] = rand() | rand() << 16 | rand() << 32 | rand() << 48;
@@ -114,7 +115,7 @@ int main()
 
         for (unsigned i = 1; i < n; ++i) if (nums[i - 1] > nums[i])
         {
-            printf("Wrong sort at %d\n", i);
+            printf("Wrong sort at %u\n", i);
             break;
         }
 
@@ -122,9 +123,9 @@ int main()
 
         delete[] nums;
 
-        n *= MULTIPLE;
+        n += MULTIPLE;
     }
-
+    */
 
     getchar();
     return 0;

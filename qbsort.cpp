@@ -59,7 +59,7 @@ void printb(unitype x)
 
 
 void rqbsort(unitype* begin, unitype* end, int p)
-{
+{ // A reverse version to qbsort
     if (begin >= end - 1) return;
     if (p < 0) return;
 
@@ -85,9 +85,12 @@ void rqbsort(unitype* begin, unitype* end, int p)
 }
 
 void qbsort(unitype* begin, unitype* end, int p)
-{
-    if (begin >= end - 1) return;
-    if (p < 0) return;
+{ // A mutation from quick sort with linear time complexity.
+  // It works within the range [begin, end)
+  // A bit array represents the p th digits of the sorting array.
+
+    if (begin >= end - 1) return; // A case that the bit array is empty
+    if (p < 0) return; // A case that the call reachs a leaf
 
     unitype* lhs = begin;
     unitype* rhs = end - 1;
@@ -95,19 +98,28 @@ void qbsort(unitype* begin, unitype* end, int p)
 
     for (;;)
     {
+        // Finding the first 0 or 1 (according to the sort order) 
+        // from edge to median.
         while (((*lhs >> p) & 1) != 1 && lhs != end) ++lhs;
         while (((*rhs >> p) & 1) != 0) --rhs;
-        if (lhs < rhs)
-        {
+        if (lhs < rhs) // It means the bit array is not sorted completely
+        { // Swap
             temp = *lhs;
             *lhs = *rhs;
             *rhs = temp;
         }
         else if (lhs > rhs) break;
+        // There is no case that lhs==rhs because we want lhs exceeds rhs so
+        // that lhs is able to become the "end" for recursive call.
     }
 
-    qbsort(begin, lhs, p - 1);
+    /* 
+    *  The left subarray should be call first in single-thread
+    *  so that the compiler can do tail optimization if the current bit
+    *  array is all 0
+    */
     qbsort(lhs, end, p - 1);
+    qbsort(begin, lhs, p - 1);
 }
 
 void qsort(unitype* begin, unitype* end)
