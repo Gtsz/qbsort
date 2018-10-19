@@ -2,6 +2,7 @@
 
 #include <iostream> //test
 //using std::cout;
+
 /*
 void printb(unitype x)
 {
@@ -58,7 +59,7 @@ void printb(unitype x)
 //}
 
 
-void rqbsort(unitype* begin, unitype* end, int p)
+void qbsort_reverse(unitype* begin, unitype* end, int p)
 { // A reverse version to qbsort
     if (begin >= end - 1) return;
     if (p < 0) return;
@@ -80,8 +81,8 @@ void rqbsort(unitype* begin, unitype* end, int p)
         else if (lhs > rhs) break;
     }
 
-    rqbsort(begin, lhs, p - 1);
-    rqbsort(lhs, end, p - 1);
+    qbsort_reverse(begin, lhs, p - 1);
+    qbsort_reverse(lhs, end, p - 1);
 }
 
 void qbsort(unitype* begin, unitype* end, int p)
@@ -122,7 +123,69 @@ void qbsort(unitype* begin, unitype* end, int p)
     qbsort(begin, lhs, p - 1);
 }
 
-void qsort(unitype* begin, unitype* end)
+void qbsort_stable(unitype* begin, unitype* end, int p)
+{
+    if (begin >= end - 1) return;
+    if (p < 0) return;
+
+    unsigned count1 = 0;
+    for (unitype* it = begin; it != end; ++it)
+        if ((*it >> p) & 1) ++count1;
+
+    unitype* devide = end - count1;
+    unitype* fs0 = begin;
+    unitype* fs1 = devide;
+    unitype temp;
+
+    for (;;)
+    {
+        while (((*fs0 >> p) & 1) != 1 && fs0 != devide) ++fs0; // find the first "1" in range[begin,divide)
+        while (((*fs1 >> p) & 1) != 0 && fs1 != end) ++fs1;
+        if (fs0 != devide && fs1 != end)
+        {
+            temp = *fs0;
+            *fs0 = *fs1;
+            *fs1 = temp;
+        }
+        else break;
+    }
+
+    qbsort_stable(begin, devide, p - 1);
+    qbsort_stable(devide, end, p - 1);
+}
+
+void qbsort(unitype* begin, unitype* end)
 {
     qbsort(begin, end, sizeof(unitype) * 8 - 1);
+}
+
+void qbsort_stable(unitype* begin, unitype* end)
+{
+    qbsort_stable(begin, end, sizeof(unitype) * 8 - 1);
+}
+
+void qbsort_signed(sigtype* begin, sigtype* end)
+{ // Reversely sort the first digits
+    if (begin >= end - 1) return;
+    int p = sizeof(unitype) * 8 - 1;
+
+    sigtype* lhs = begin;
+    sigtype* rhs = end - 1;
+    sigtype temp;
+
+    for (;;)
+    {
+        while (((*lhs >> p) & 1) != 0) ++lhs;
+        while (((*rhs >> p) & 1) != 1 && rhs != begin - 1) --rhs;
+        if (lhs < rhs)
+        {
+            temp = *lhs;
+            *lhs = *rhs;
+            *rhs = temp;
+        }
+        else if (lhs > rhs) break;
+    }
+
+    qbsort((unitype*) begin, (unitype*) lhs, p - 1);
+    qbsort((unitype*) lhs, (unitype*) end, p - 1);
 }
