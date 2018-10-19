@@ -59,32 +59,6 @@ void printb(unitype x)
 //}
 
 
-void qbsort_reverse(unitype* begin, unitype* end, int p)
-{ // A reverse version to qbsort
-    if (begin >= end - 1) return;
-    if (p < 0) return;
-
-    unitype* lhs = begin;
-    unitype* rhs = end - 1;
-    unitype temp;
-
-    for (;;)
-    {
-        while (((*lhs >> p) & 1) != 0) ++lhs;
-        while (((*rhs >> p) & 1) != 1 && rhs != begin - 1) --rhs;
-        if (lhs < rhs)
-        {
-            temp = *lhs;
-            *lhs = *rhs;
-            *rhs = temp;
-        }
-        else if (lhs > rhs) break;
-    }
-
-    qbsort_reverse(begin, lhs, p - 1);
-    qbsort_reverse(lhs, end, p - 1);
-}
-
 void qbsort(unitype* begin, unitype* end, int p)
 { // A mutation from quick sort with linear time complexity.
   // It works within the range [begin, end)
@@ -121,6 +95,32 @@ void qbsort(unitype* begin, unitype* end, int p)
     */
     qbsort(lhs, end, p - 1);
     qbsort(begin, lhs, p - 1);
+}
+
+void qbsort_reverse(unitype* begin, unitype* end, int p)
+{ // A reverse version to qbsort
+    if (begin >= end - 1) return;
+    if (p < 0) return;
+
+    unitype* lhs = begin;
+    unitype* rhs = end - 1;
+    unitype temp;
+
+    for (;;)
+    {
+        while (((*lhs >> p) & 1) != 0 && lhs != end) ++lhs;
+        while (((*rhs >> p) & 1) != 1) --rhs;
+        if (lhs < rhs)
+        {
+            temp = *lhs;
+            *lhs = *rhs;
+            *rhs = temp;
+        }
+        else if (lhs > rhs) break;
+    }
+
+    qbsort_reverse(lhs, end, p - 1);
+    qbsort_reverse(begin, lhs, p - 1);
 }
 
 void qbsort_stable(unitype* begin, unitype* end, int p)
@@ -167,7 +167,7 @@ void qbsort_stable(unitype* begin, unitype* end)
 void qbsort_signed(sigtype* begin, sigtype* end)
 { // Reversely sort the first digits
     if (begin >= end - 1) return;
-    int p = sizeof(unitype) * 8 - 1;
+    int p = sizeof(sigtype) * 8 - 1;
 
     sigtype* lhs = begin;
     sigtype* rhs = end - 1;
@@ -175,8 +175,8 @@ void qbsort_signed(sigtype* begin, sigtype* end)
 
     for (;;)
     {
-        while (((*lhs >> p) & 1) != 0) ++lhs;
-        while (((*rhs >> p) & 1) != 1 && rhs != begin - 1) --rhs;
+        while (((*lhs >> p) & 1) != 0 && lhs != end) ++lhs;
+        while (((*rhs >> p) & 1) != 1) --rhs;
         if (lhs < rhs)
         {
             temp = *lhs;
@@ -188,4 +188,33 @@ void qbsort_signed(sigtype* begin, sigtype* end)
 
     qbsort((unitype*) begin, (unitype*) lhs, p - 1);
     qbsort((unitype*) lhs, (unitype*) end, p - 1);
+}
+
+void qbsort_float(flotype* begin, flotype* end)
+{
+    sigtype* ibegin = (sigtype*) begin;
+    sigtype* iend = (sigtype*) end;
+
+    if (begin >= end - 1) return;
+    int p = sizeof(sigtype) * 8 - 1;
+
+    sigtype* lhs = ibegin;
+    sigtype* rhs = iend - 1;
+    sigtype temp;
+
+    for (;;)
+    {
+        while (((*lhs >> p) & 1) != 0 && lhs != iend) ++lhs;
+        while (((*rhs >> p) & 1) != 1) --rhs;
+        if (lhs < rhs)
+        {
+            temp = *lhs;
+            *lhs = *rhs;
+            *rhs = temp;
+        }
+        else if (lhs > rhs) break;
+    }
+
+    qbsort_reverse((unitype*) ibegin, (unitype*) lhs, p - 1);
+    qbsort((unitype*) lhs, (unitype*) iend, p - 1);
 }
